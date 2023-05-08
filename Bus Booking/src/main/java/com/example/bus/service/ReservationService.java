@@ -30,10 +30,6 @@ public class ReservationService {
         Traveler existingtraveler = traveler1.get();
         Bus existingbus = bus1.get();
 
-        if(reserv.getJourneyDate().isBefore(LocalDate.now())) return "Please enter future date!";//ok
-        if(!existingbus.getBusjourneydate().isEqual(reserv.getJourneyDate())) return"Bus is not available on "+reserv.getJourneyDate();
-        if(!reserv.getSource().equalsIgnoreCase(existingbus.getRoutefrom()) || !reserv.getDestination().equalsIgnoreCase(existingbus.getRouteto()))
-         return "Bus is not available on route : "+ reserv.getSource()+" - "+reserv.getDestination();
         int seatsAvailable = existingbus.getAvailableseats();
         if(seatsAvailable < reserv.getNoofseatsbooked()) return "Reservation Failed! Available seats:0 ";
 
@@ -44,7 +40,6 @@ public class ReservationService {
         Bus updatedBus =busRepository.save(existingbus);
 
         reservation.setBus(updatedBus);
-
         reservation.setReservationstatus("Successfull");
         reservation.setReservationdate(LocalDate.now());
         reservation.setReservationtime(LocalTime.now());
@@ -52,7 +47,7 @@ public class ReservationService {
         reservation.setDestination(existingbus.getRouteto());
         reservation.setNoofseatsbooked(reserv.getNoofseatsbooked());
         reservation.setFare(existingbus.getFareperseat()*(reserv.getNoofseatsbooked()));
-        reservation.setJourneyDate(reserv.getJourneyDate());
+        reservation.setJourneyDate(existingbus.getBusjourneydate());
 
         List<Reservation> userReservations =existingtraveler.getReservations();
         userReservations.add(reservation);
